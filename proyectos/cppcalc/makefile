@@ -1,4 +1,4 @@
-CXXFLAGS=-g
+all: cppcalc #señala que es el objetivo del programa
 
 cppcalc: calc.o scanner.o token.o ast.o parser.o calculator.o
 	$(CXX) -o $@ $^ #$ y arroba toma todos los objetivos osea .o 
@@ -11,7 +11,7 @@ scanner.o: scanner.cpp scanner.h token.h
 
 token.o: token.cpp token.h
 
-[15~ast.o: ast.cpp ast.h
+ast.o: ast.cpp ast.h
 
 parser.o: parser.cpp parser.h
 
