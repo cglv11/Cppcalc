@@ -1,5 +1,4 @@
-#ifndef token_h
-#define token_h
+#pragma once  //decirle al compilador que incluya todo el archivo una vez 
 
 #include <string>
 using namespace std;
@@ -25,7 +24,7 @@ private:
   int line,col;
 };
 
-class LexicalToken: public Token {
+class LexicalToken : public Token {
  public:
    LexicalToken(TokenType typ, string* lex, int line, int col);
    ~LexicalToken();
@@ -36,7 +35,9 @@ class LexicalToken: public Token {
    string* lexeme;
 };
 
-#endif
+//class LexicalToken extends Token
+
+
 
 
 
