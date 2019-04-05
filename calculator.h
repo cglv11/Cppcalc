@@ -1,5 +1,4 @@
-#ifndef calculator_h
-#define calculator_h
+#pragma once
 
 #include <string>
  
@@ -18,7 +17,5 @@ class Calculator {
    int memory;
 };
 
-extern Calculator* calc;
-
-#endif
+extern Calculator* calc;  //variable global, para resolver el problema que tenemos una sola memoria. Con la variable externa, recall llama a calculator
 

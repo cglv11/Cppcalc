@@ -72,6 +72,22 @@ int SubNode::evaluate() {
    return getLeftSubTree()->evaluate() - getRightSubTree()->evaluate();
 }
 
+TimesNode::TimesNode(AST* left, AST* right):
+   BinaryNode(left,right)
+{}
+
+int TimesNode::evaluate() {
+   return getLeftSubTree()->evaluate() * getRightSubTree()->evaluate();
+}
+
+DivideNode::DivideNode(AST* left, AST* right):
+   BinaryNode(left,right)
+{}
+
+int DivideNode::evaluate() {
+   return getLeftSubTree()->evaluate() / getRightSubTree()->evaluate();
+}
+
 NumNode::NumNode(int n) :
    AST(),
    val(n)
@@ -79,4 +95,19 @@ NumNode::NumNode(int n) :
 
 int NumNode::evaluate() {
    return val;
+}
+
+RecallNode::RecallNode() :
+   AST()
+{}
+
+int RecallNode::evaluate() {
+  return calc->recall();
+}
+
+StoreNode::StoreNode(AST *sub) : UnaryNode(sub) { }
+
+int StoreNode::evaluate() {
+  calc->store(getSubTree()->evaluate()); 
+  return calc->recall();  //en esta func almacenamos el valor, como calc es un apuntador a un objeto lo que hace es tomar la funcion del objeto apuntado.
 }

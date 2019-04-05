@@ -1,5 +1,5 @@
-#ifndef ast_h
-#define ast_h
+#pragma once
+#include <string> 
 
 // using namespace std;
 
@@ -48,18 +48,47 @@ class SubNode : public BinaryNode {
    int evaluate();
 };
 
-class NumNode : public AST {
+class TimesNode : public BinaryNode {
  public:
+   TimesNode(AST* left, AST* right);
+
+   int evaluate();
+};
+
+class DivideNode : public BinaryNode {
+ public:
+   DivideNode(AST* left, AST* right);
+
+   int evaluate();
+};
+
+class NumNode : public AST {
+
+public:     //metodos
    NumNode(int n);
 
    int evaluate();
 
- private:
-   int val;
+private:
+  int val;
+  
+};
+
+class RecallNode : public AST {
+
+public:     //metodos
+   RecallNode();
+
+   int evaluate();
+
+};
+
+class StoreNode : public UnaryNode {
+public:
+  StoreNode(AST* sub);
+  int evaluate();  //tiene un hijo y en la eval de ese hijo almacenar el resultado
 };
 
 
 
-
-#endif
 

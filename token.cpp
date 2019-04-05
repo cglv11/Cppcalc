@@ -10,7 +10,7 @@ Token::~Token() {} //el destructor no tiene instrucciones
 
 Token::Token(TokenType type, int line, int colNum) : 
   type(type),
-  line(Num),
+  line(line),
   col(colNum) 
 { //cuerpo de instrucciones
 }
