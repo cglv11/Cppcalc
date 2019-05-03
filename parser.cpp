@@ -21,9 +21,10 @@ AST* Parser::prog() {
    AST* result = expr();
    Token* t = scan->getToken();
 
-   if (t->getType() != eof) {
-      cout << "Syntax Error: Expected EOF, found token at column " << t->getCol() << endl;
-      throw ParseError;
+   if (t->getType() != eof) { //Si token es diferente a eof throw error 
+     /* Error standar */ cerr << "Syntax Error: Expected EOF, found token at column "
+			      << t->getCol() << endl;
+      throw ParseError; 
    }
 
    return result;
@@ -34,24 +35,71 @@ AST* Parser::expr() {
 }
 
 AST* Parser::restExpr(AST* e) {
-   Token* t = scan->getToken();
+  Token* t = scan->getToken();  //obtiene el token
 
-   if (t->getType() == add) {
+  if (t->getType() == add) { // [((+ term) RestExpr) | - term RestExpr | e ] addNode 
       return restExpr(new AddNode(e,term()));
    }
 
    if (t->getType() == sub)
       return restExpr(new SubNode(e,term()));
-
+   
    scan->putBackToken();
 
    return e;
 }
 
 AST* Parser::term() {
-   //write your term() code here. This code is just temporary
-   //so you can try the calculator out before finishing it.
-   Token* t = scan->getToken();
+  return restTerm(storable()); //restTerm llama a storable
+}
+
+AST* Parser::restTerm(AST* e) {
+    Token* t = scan->getToken();  //obtiene el token
+
+   AST* result = nullptr;
+
+   switch(t->getType()) {
+   case times:
+     result = restTerm(new TimesNode(e, storable()));
+     break;
+
+   case divide:
+     result = restTerm(new DivideNode(e, storable()));
+     break;
+
+   default:
+     scan->putBackToken();
+     result = e;
+     break;
+   }
+
+   return result;
+}
+
+AST* Parser::storable() {
+  AST* result = factor(); //AST (Arbol abstracto sintatico)
+
+    Token *t = scan->getToken();
+
+  if (t->getType() == keyword){
+    if(t->getLex() == "S") { //"S" es una palabra reservada (keyword)
+      return new StoreNode(result);
+    }
+    else {
+      cerr << "Expected S found: " //se esperaba palabra reservada S pero ingresaron otra.
+	   << t->getLex() << endl;
+      throw ParseError; 
+    }
+  }
+  else {
+    scan->putBackToken();
+  }
+  return result;
+}
+
+AST* Parser::factor() {
+
+     Token* t = scan->getToken();
 
    if (t->getType() == number) {
       istringstream in(t->getLex());
@@ -60,26 +108,32 @@ AST* Parser::term() {
       return new NumNode(val);
    }
 
-   cout << "Term not implemented" << endl;
+   if (t->getType() == keyword){
+    if(t->getLex() == "R") { //"R" es una palabra reservada (keyword)
+      return new RecallNode();
+    }
+    else {
+      cerr << "Expected R found: " //se esperaba palabra reservada S pero ingresaron otra.
+           << t->getLex() << endl;
+      throw ParseError;
+    }
+  }
 
+   if (t->getType() == lparen) { //left parentesis
+     AST *result = expr();
+     t = scan->getToken();
+     if (t->getType() != rparen) {
+       cerr << "Expected )" //Esperaba un parentesis derecho
+	    << endl;
+       throw ParseError;
+     }
+     return result;
+   }
+
+   cerr << "Expected number, R, ("
+	<< endl;
    throw ParseError; 
 }
 
-AST* Parser::restTerm(AST* e) {
-   cout << "restTerm not implemented" << endl;
+//Analizador sintactico. 
 
-   throw ParseError; 
-}
-
-AST* Parser::storable() {
-   cout << "storable not implemented" << endl;
-
-   throw ParseError; 
-}
-
-AST* Parser::factor() {
-   cout << "factor not implemented" << endl;
-
-   throw ParseError; 
-}
-   

@@ -31,7 +31,7 @@ Scanner::Scanner(istream* in):
   lineCount(1),
   colCount(-1),
   needToken(true),
-  lastToken(0)
+  lastToken(nullptr)
 {}
 
 Scanner::~Scanner() {
@@ -53,7 +53,7 @@ Token* Scanner::getToken() {
    Token* t;
    int state=0;
    bool foundOne=false;
-   char c;
+   int c;
    string lex;
    TokenType type;
    int k;
@@ -61,6 +61,10 @@ Token* Scanner::getToken() {
 
    c = inStream->get();
 
+#ifdef debug
+   cout << c << endl;
+#endif
+   
    while (!foundOne) {
       colCount++;
       switch (state) {
@@ -77,11 +81,11 @@ Token* Scanner::getToken() {
             else if (c=='(') state=7;
             else if (c==')') state=8;
             else if (c=='\n') {
-               colCount=-1;
+	      colCount=-1;
                lineCount++;
             }
             else if (isWhiteSpace(c));
-            else if (inStream->eof()) {
+            else if (inStream->eof() or c== EOF) {
                foundOne=true;
                type=eof;
             }
@@ -139,8 +143,12 @@ Token* Scanner::getToken() {
       }
       
       if (!foundOne) {
-         lex = lex + c;
+	lex = lex + (char)c;
          c = inStream->get();
+#ifdef debug
+	 cout << c << endl;
+#endif
+	 
       }
    }
 
@@ -161,13 +169,3 @@ Token* Scanner::getToken() {
    return t;
 
 }
-         
-  
-
-
-
-
-
-
-
-
