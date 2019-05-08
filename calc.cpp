@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <cstdlib>
 #include "calcex.h"
 #include "calculator.h"
 using namespace std;
@@ -28,6 +29,9 @@ int main(int argc, char* argv[]) {
    }
    catch(Exception ex) {
       cout << "Program Aborted due to exception!" << endl;
+      return EXIT_FAILURE;
    }
+
+   return EXIT_SUCCESS;
 }
    
