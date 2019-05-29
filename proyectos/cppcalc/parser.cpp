@@ -67,6 +67,11 @@ AST* Parser::restTerm(AST* e) {
      result = restTerm(new DivideNode(e, storable()));
      break;
 
+   case module:
+     result = restTerm(new ModuleNode(e, storable()));
+     break;
+
+     
    default:
      scan->putBackToken();
      result = e;

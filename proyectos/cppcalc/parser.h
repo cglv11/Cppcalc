@@ -13,11 +13,13 @@ class Parser {
 
  private:
    AST* prog();
+   AST* ListExpr();
    AST* expr();
    AST* restExpr(AST* e);
    AST* term();
    AST* restTerm(AST* t);
    AST* storable();
+   AST* MemOperation();
    AST* factor();
 
    Scanner* scan;
