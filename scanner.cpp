@@ -80,6 +80,7 @@ Token* Scanner::getToken() {
             else if (c=='/') state=6;
             else if (c=='(') state=7;
             else if (c==')') state=8;
+	    else if (c=='%') state=9;
             else if (c=='\n') {
 	      colCount=-1;
                lineCount++;
@@ -140,6 +141,10 @@ Token* Scanner::getToken() {
             type = rparen;
             foundOne=true;
             break;
+         case 9 :
+	    type = module;
+	    foundOne=true;
+	    break;
       }
       
       if (!foundOne) {
