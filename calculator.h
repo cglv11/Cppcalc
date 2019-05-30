@@ -12,6 +12,7 @@ class Calculator {
    int eval(string expr);
    void store(int val);
    int recall();
+   int clear();
 
  private:
    int memory;
