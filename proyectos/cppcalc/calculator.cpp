@@ -32,3 +32,8 @@ void Calculator::store(int val) {
 int Calculator::recall() {
    return memory;
 }
+
+int Calculator::clear() {
+  memory = 0;
+  return memory;
+}

@@ -8,10 +8,10 @@ using namespace std;
 //Uncomment this to get debug information
 //#define debug
 
-const int numberOfKeywords = 2;
+const int numberOfKeywords = 3;
 
 const string keywd[numberOfKeywords] = {
-  string("S"), string("R")
+					string("S"), string("R"), string("C") 
 };
 
 int isLetter(char c) {

@@ -119,3 +119,11 @@ int StoreNode::evaluate() {
   calc->store(getSubTree()->evaluate()); 
   return calc->recall();  //en esta func almacenamos el valor, como calc es un apuntador a un objeto lo que hace es tomar la funcion del objeto apuntado.
 }
+
+ClearNode::ClearNode() :
+   AST()
+{}
+
+int ClearNode::evaluate() {
+  return calc->clear();
+}

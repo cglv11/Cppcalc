@@ -118,11 +118,23 @@ AST* Parser::factor() {
       return new RecallNode();
     }
     else {
-      cerr << "Expected R found: " //se esperaba palabra reservada S pero ingresaron otra.
+      cerr << "Expected R found: " //se esperaba palabra reservada R pero ingresaron otra
            << t->getLex() << endl;
       throw ParseError;
     }
   }
+
+    if (t->getType() == keyword){
+      if(t->getLex() == "C") {
+      return new ClearNode();
+    }
+      else {
+	cerr << "Expected C found: " 
+           << t->getLex() << endl;
+	throw ParseError;
+      }
+  }
+
 
    if (t->getType() == lparen) { //left parentesis
      AST *result = expr();

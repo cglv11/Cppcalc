@@ -96,6 +96,15 @@ public:
   int evaluate();  //tiene un hijo y en la eval de ese hijo almacenar el resultado
 };
 
+class ClearNode : public AST {
+
+public:     //metodos
+   ClearNode();
+
+   int evaluate();
+
+};
+
 
 
 

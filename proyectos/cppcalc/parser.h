@@ -19,7 +19,7 @@ class Parser {
    AST* term();
    AST* restTerm(AST* t);
    AST* storable();
-   AST* MemOperation();
+   AST* MemOperation(AST* h);
    AST* factor();
 
    Scanner* scan;
