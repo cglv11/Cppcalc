@@ -1,10 +1,10 @@
-#pragma once  //decirle al compilador que incluya todo el archivo una vez 
+#pragma once   
 
 #include <string>
 using namespace std;
 
 enum TokenType {
-		identifier,keyword,number,add,sub,times,divide,lparen,rparen,module,eof,unrecognized
+		identifier,keyword,number,add,sub,times,divide,lparen,rparen,module,eol,eof,unrecognized,equals
 };
 
 class Token {
@@ -35,7 +35,7 @@ class LexicalToken : public Token {
    string* lexeme;
 };
 
-//class LexicalToken extends Token
+
 
 
 

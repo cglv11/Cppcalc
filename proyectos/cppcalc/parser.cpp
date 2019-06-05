@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "parser.h" 
 #include "calcex.h"
 #include <string>
 #include <sstream>
@@ -18,16 +18,17 @@ AST* Parser::parse() {
 }
 
 AST* Parser::prog() {
+  
    AST* result = expr();
    Token* t = scan->getToken();
 
-   if (t->getType() != eof) { //Si token es diferente a eof throw error 
-     /* Error standar */ cerr << "Syntax Error: Expected EOF, found token at column "
-			      << t->getCol() << endl;
-      throw ParseError; 
+   if (t->getType() != eof) {
+     cout << "* parser error" << endl;
+     throw ParseError;
    }
 
    return result;
+  
 }
 
 AST* Parser::expr() {
@@ -35,9 +36,9 @@ AST* Parser::expr() {
 }
 
 AST* Parser::restExpr(AST* e) {
-  Token* t = scan->getToken();  //obtiene el token
+  Token* t = scan->getToken();  
 
-  if (t->getType() == add) { // [((+ term) RestExpr) | - term RestExpr | e ] addNode 
+  if (t->getType() == add) {  
       return restExpr(new AddNode(e,term()));
    }
 
@@ -70,7 +71,6 @@ AST* Parser::restTerm(AST* e) {
    case module:
      result = restTerm(new ModuleNode(e, storable()));
      break;
-
      
    default:
      scan->putBackToken();
@@ -82,30 +82,44 @@ AST* Parser::restTerm(AST* e) {
 }
 
 AST* Parser::storable() {
-  AST* result = factor(); //AST (Arbol abstracto sintatico)
+  return memOperation(factor());
+}
+
+AST* Parser::memOperation(AST* e) {
+
+  AST* result = e; 
 
     Token *t = scan->getToken();
 
   if (t->getType() == keyword){
-    if(t->getLex() == "S") { //"S" es una palabra reservada (keyword)
+    if(t->getLex() == "S") { 
       return new StoreNode(result);
     }
+    else if(t->getLex() == "P") {
+      return new PlusNode(result);
+    }
+    else if(t->getLex() == "M") {
+      return new MinusNode(result);
+    }
     else {
-      cerr << "Expected S found: " //se esperaba palabra reservada S pero ingresaron otra.
-	   << t->getLex() << endl;
+      cout << "* parse error" << endl;
       throw ParseError; 
     }
   }
+  
   else {
     scan->putBackToken();
   }
+  
   return result;
+
 }
 
 AST* Parser::factor() {
 
-     Token* t = scan->getToken();
-
+  AST* result;
+  Token* t = scan->getToken();
+     
    if (t->getType() == number) {
       istringstream in(t->getLex());
       int val;
@@ -113,44 +127,55 @@ AST* Parser::factor() {
       return new NumNode(val);
    }
 
+   if (t->getType() == identifier) {
+      istringstream in(t->getLex());
+      string val;
+      in >> val;
+      return new IdNode(val);
+   }
+
    if (t->getType() == keyword){
-    if(t->getLex() == "R") { //"R" es una palabra reservada (keyword)
+    if(t->getLex() == "-v") {
+      return InitVar();
+     } 
+    else if(t->getLex() == "R") { 
       return new RecallNode();
     }
+    else if(t->getLex() == "C") {
+      return new ClearNode();
+    }
     else {
-      cerr << "Expected R found: " //se esperaba palabra reservada R pero ingresaron otra
-           << t->getLex() << endl;
+      cout << "* Parse error" << endl;
       throw ParseError;
     }
   }
 
-    if (t->getType() == keyword){
-      if(t->getLex() == "C") {
-      return new ClearNode();
-    }
-      else {
-	cerr << "Expected C found: " 
-           << t->getLex() << endl;
-	throw ParseError;
-      }
-  }
-
-
-   if (t->getType() == lparen) { //left parentesis
+   if (t->getType() == lparen) { 
      AST *result = expr();
      t = scan->getToken();
      if (t->getType() != rparen) {
-       cerr << "Expected )" //Esperaba un parentesis derecho
-	    << endl;
+       cout << "* Parse error" << endl;
        throw ParseError;
      }
      return result;
    }
 
-   cerr << "Expected number, R, ("
-	<< endl;
+   cerr << "* Parse error" << endl;
    throw ParseError; 
 }
 
-//Analizador sintactico. 
+AST* Parser::InitVar() {
+  Token* t = scan->getToken();
+
+  if(t->getType() == identifier) {
+    Token* t1 = scan->getToken();
+
+    if(t1->getType() == equals)
+      return new InitVarNode(t->getLex(), expr());
+  }
+  
+  cout << "* parser error" << endl;
+  throw ParseError;   
+}
+
 

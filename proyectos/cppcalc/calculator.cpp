@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <map>
 
 
 Calculator::Calculator():
@@ -36,4 +37,24 @@ int Calculator::recall() {
 int Calculator::clear() {
   memory = 0;
   return memory;
+}
+
+void Calculator::plus(int val) {
+   memory += val;
+}
+
+void Calculator::minus(int val) {
+   memory -= val;
+}
+
+void Calculator::setVar(string var, int val) {
+  variables[var] = val;
+}
+
+bool Calculator::containVar(string var) {
+  return variables.count(var);
+}
+
+int Calculator::getVar(string var) {
+  return variables[var];
 }

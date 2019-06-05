@@ -105,6 +105,20 @@ int NumNode::evaluate() {
    return val;
 }
 
+IdNode::IdNode(std::string var) :
+   AST(),
+   var(var)
+{}
+
+int IdNode::evaluate() {
+  if(calc->containVar(var))
+    return calc->getVar(var);
+  else
+    calc->setVar(var, 0);
+    return 0;
+}
+
+
 RecallNode::RecallNode() :
    AST()
 {}
@@ -113,7 +127,19 @@ int RecallNode::evaluate() {
   return calc->recall();
 }
 
+InitVarNode::InitVarNode(std::string var, AST* sub) : UnaryNode(sub), var(var) {}
+
+InitVarNode::~InitVarNode() {}
+
+int InitVarNode::evaluate(){
+
+  calc->setVar(var, getSubTree()->evaluate());
+  return calc->getVar(var);
+}
+
 StoreNode::StoreNode(AST *sub) : UnaryNode(sub) { }
+
+StoreNode::~StoreNode() {}
 
 int StoreNode::evaluate() {
   calc->store(getSubTree()->evaluate()); 
@@ -124,6 +150,27 @@ ClearNode::ClearNode() :
    AST()
 {}
 
+ClearNode::~ClearNode() {}
+
 int ClearNode::evaluate() {
   return calc->clear();
 }
+
+PlusNode::PlusNode(AST *sub) : UnaryNode(sub) { }
+
+PlusNode::~PlusNode() {}
+
+int PlusNode::evaluate() {
+  calc->plus(getSubTree()->evaluate());
+  return calc->recall();  
+}
+
+MinusNode::MinusNode(AST *sub) : UnaryNode(sub) { }
+
+MinusNode::~MinusNode() {}
+
+int MinusNode::evaluate() {
+  calc->minus(getSubTree()->evaluate());
+  return calc->recall();
+}
+

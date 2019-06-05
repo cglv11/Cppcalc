@@ -8,10 +8,10 @@ using namespace std;
 //Uncomment this to get debug information
 //#define debug
 
-const int numberOfKeywords = 3;
+const int numberOfKeywords = 6;
 
 const string keywd[numberOfKeywords] = {
-					string("S"), string("R"), string("C") 
+					string("S"), string("R"), string("C"), string("P"), string("M"), string("-v"),
 };
 
 int isLetter(char c) {
@@ -81,6 +81,7 @@ Token* Scanner::getToken() {
             else if (c=='(') state=7;
             else if (c==')') state=8;
 	    else if (c=='%') state=9;
+	    else if (c=='=') state=10;
             else if (c=='\n') {
 	      colCount=-1;
                lineCount++;
@@ -91,20 +92,19 @@ Token* Scanner::getToken() {
                type=eof;
             }
             else {
-               cout << "Unrecognized Token found at line " << line <<
-                  " and column " << column << endl;
+	      cout << "* scanner error" << endl;
                throw UnrecognizedToken;
             }
             break;
          case 1 :
-            if (isLetter(c) || isDigit(c)) state=1;
+	   if (isLetter(c) || isDigit(c)) state=1;
             else {
                for (k=0;k<numberOfKeywords;k++)
                   if (lex == keywd[k]) {
                      foundOne = true;
                      type = keyword;
                   }
-               if (!foundOne) {
+	       if (!foundOne) {
                   type = identifier;
                   foundOne = true;
                }
@@ -143,6 +143,10 @@ Token* Scanner::getToken() {
             break;
          case 9 :
 	    type = module;
+	    foundOne=true;
+	    break;
+         case 10 :
+	    type = equals;
 	    foundOne=true;
 	    break;
       }
