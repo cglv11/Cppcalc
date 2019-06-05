@@ -1,7 +1,8 @@
 #pragma once
-#include <string> 
+#include <string>
+#include <cstdlib>
 
-// using namespace std;
+using namespace std;
 
 class AST {
  public:
@@ -81,6 +82,18 @@ private:
   
 };
 
+class IdNode : public AST {
+
+public:     
+  IdNode(std::string var);
+
+   int evaluate();
+
+private:
+  std::string var;
+
+};
+
 class RecallNode : public AST {
 
 public:     //metodos
@@ -90,17 +103,50 @@ public:     //metodos
 
 };
 
+class InitVarNode : public UnaryNode {
+public:
+  InitVarNode(std::string var, AST* sub);
+  ~InitVarNode();
+
+  int evaluate();
+  
+private:
+  std::string var;
+};
+
 class StoreNode : public UnaryNode {
 public:
   StoreNode(AST* sub);
+  ~StoreNode();
+  
   int evaluate();  //tiene un hijo y en la eval de ese hijo almacenar el resultado
 };
 
 class ClearNode : public AST {
 
-public:     //metodos
+public:     
    ClearNode();
+  ~ClearNode();
+  
+   int evaluate();
 
+};
+
+class PlusNode : public UnaryNode {
+
+public:     
+   PlusNode(AST* sub);
+  ~PlusNode();
+   int evaluate();
+
+};
+
+class MinusNode : public UnaryNode {
+
+public:     
+   MinusNode(AST* sub);
+  ~MinusNode();
+  
    int evaluate();
 
 };

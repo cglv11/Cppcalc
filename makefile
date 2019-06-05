@@ -1,7 +1,7 @@
-all: cppcalc #señala que es el objetivo del programa
+all: cppcalc 
 
 cppcalc: calc.o scanner.o token.o ast.o parser.o calculator.o
-	$(CXX) -o $@ $^ #$ y arroba toma todos los objetivos osea .o 
+	$(CXX) -o $@ $^  
 
 calc.o: calc.cpp scanner.h token.h
 

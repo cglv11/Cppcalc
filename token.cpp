@@ -6,13 +6,13 @@ Token::Token() :
   col(0)
 {}
 
-Token::~Token() {} //el destructor no tiene instrucciones
+Token::~Token() {} 
 
 Token::Token(TokenType type, int line, int colNum) : 
   type(type),
   line(line),
   col(colNum) 
-{ //cuerpo de instrucciones
+{ 
 }
 
 TokenType Token::getType() const {
