@@ -170,7 +170,7 @@ AST* Parser::InitVar() {
   if(t->getType() == identifier) {
     Token* t1 = scan->getToken();
 
-    if(t1->getType() == equals)
+    if(t1->getType() == eol)
       return new InitVarNode(t->getLex(), expr());
   }
   
