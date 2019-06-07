@@ -9,6 +9,7 @@ class AST {
    AST();
    virtual ~AST() = 0;
    virtual int evaluate() = 0;
+  virtual string compile() = 0;
 };
 
 class BinaryNode : public AST {
@@ -40,6 +41,7 @@ class AddNode : public BinaryNode {
    AddNode(AST* left, AST* right);
    
    int evaluate();
+   string compile();
 };
 
 class SubNode : public BinaryNode {
@@ -47,6 +49,7 @@ class SubNode : public BinaryNode {
    SubNode(AST* left, AST* right);
 
    int evaluate();
+   string compile();
 };
 
 class TimesNode : public BinaryNode {
@@ -54,6 +57,7 @@ class TimesNode : public BinaryNode {
    TimesNode(AST* left, AST* right);
 
    int evaluate();
+   string compile();
 };
 
 class DivideNode : public BinaryNode {
@@ -61,6 +65,7 @@ class DivideNode : public BinaryNode {
    DivideNode(AST* left, AST* right);
 
    int evaluate();
+   string compile();
 };
 
 class ModuleNode : public BinaryNode {
@@ -68,6 +73,7 @@ class ModuleNode : public BinaryNode {
    ModuleNode(AST* left, AST* right);
 
    int evaluate();
+   string compile();
 };
 
 class NumNode : public AST {
@@ -76,10 +82,10 @@ public:     //metodos
    NumNode(int n);
 
    int evaluate();
+   string compile();
 
 private:
   int val;
-  
 };
 
 class IdNode : public AST {
@@ -88,6 +94,7 @@ public:
   IdNode(std::string var);
 
    int evaluate();
+   string compile();
 
 private:
   std::string var;
@@ -100,7 +107,7 @@ public:     //metodos
    RecallNode();
 
    int evaluate();
-
+   string compile();
 };
 
 class InitVarNode : public UnaryNode {
@@ -109,6 +116,7 @@ public:
   ~InitVarNode();
 
   int evaluate();
+  string compile();
   
 private:
   std::string var;
@@ -119,7 +127,8 @@ public:
   StoreNode(AST* sub);
   ~StoreNode();
   
-  int evaluate();  //tiene un hijo y en la eval de ese hijo almacenar el resultado
+  int evaluate();
+  string compile();
 };
 
 class ClearNode : public AST {
@@ -129,7 +138,7 @@ public:
   ~ClearNode();
   
    int evaluate();
-
+   string compile();
 };
 
 class PlusNode : public UnaryNode {
@@ -138,7 +147,7 @@ public:
    PlusNode(AST* sub);
   ~PlusNode();
    int evaluate();
-
+   string compile();
 };
 
 class MinusNode : public UnaryNode {
@@ -148,7 +157,7 @@ public:
   ~MinusNode();
   
    int evaluate();
-
+   string compile();
 };
 
 

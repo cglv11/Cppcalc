@@ -18,6 +18,8 @@ class Calculator {
    void setVar(string var, int val);
    int getVar(string var);
    bool containVar(string var);
+   string compile(string expr);
+   string getKeys(); 
 
  private:
    int memory;

@@ -4,7 +4,7 @@
 using namespace std;
 
 enum TokenType {
-		identifier,keyword,number,add,sub,times,divide,lparen,rparen,module,eol,eof,unrecognized,equals
+		identifier,keyword,number,add,sub,times,divide,lparen,rparen,module,eol,eof,unrecognized
 };
 
 class Token {

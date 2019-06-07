@@ -1,4 +1,4 @@
-all: cppcalc 
+all: cppcalc
 
 cppcalc: calc.o scanner.o token.o ast.o parser.o calculator.o
 	$(CXX) -o $@ $^  

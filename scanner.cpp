@@ -146,7 +146,7 @@ Token* Scanner::getToken() {
 	    foundOne=true;
 	    break;
          case 10 :
-	    type = equals;
+	    type = eol;
 	    foundOne=true;
 	    break;
       }

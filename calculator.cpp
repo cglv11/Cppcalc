@@ -58,3 +58,30 @@ bool Calculator::containVar(string var) {
 int Calculator::getVar(string var) {
   return variables[var];
 }
+
+int Calculator::compile(string expr) {
+
+   Parser* parser = new Parser(new istringstream(expr));
+
+   AST* tree = parser->parse();
+
+   int result = tree->compile();
+
+   delete tree;
+
+   delete parser;
+
+   return result;
+}
+
+string Calculator::getKeys() {
+  string keys;
+  int count = 7;
+  for(map<string, int>::iterator it = variables.begin(); it != variables.end(); ++it){
+    keys = keys + "equ " + it->first + " M[" + to_string(count)+ "] \n";
+    count++;
+  }
+
+  return keys;
+}
+
