@@ -8,7 +8,6 @@
 #include "calcex.h"
 #include "calculator.h"
 
-
 using namespace std;
 
 Calculator* calc;
@@ -17,12 +16,12 @@ void scannerCommand(int, char**);
 bool noInteractive(int, char**);
 string getText(string);
 bool compi(int, char**);
-void compiler(ifstream&, string);
+void compiler(ifstream&);
 void noCompiler(ifstream&);
 
 int main(int argc, char* argv[]) {
    string line;
-   string chain;
+   std::string chain;
    ifstream archivo;
 
    calc = new Calculator();
@@ -30,27 +29,27 @@ int main(int argc, char* argv[]) {
    scannerCommand(argc, argv);
 
    if (noInteractive(argc, argv)){
-     bool fail = false;
+     bool error = false;
 
      for(int i=1; i<argc; i++){
-       fail = false;
+       error = false;
        chain = argv[i];
        
        if (chain.size()>=5 and chain.substr(chain.size()-5, chain.size())==".calc"){
 	 archivo.open(argv[i], ios::in);
 	 if(archivo.fail()){
 	   cout << "Error at the moment of reading file: " << argv[i] << endl;
-	   fail = true;
+	   error = true;
 	 }
 
-	 if (compi(argc, argv) and !fail){
-	   compiler(archivo, chain);
+	 if (compi(argc, argv) and !error){
+	   compiler(archivo);
 	 }
 	 else {
-	   if (!fail)
+	     if(!error)
 	     noCompiler(archivo);
+	     
 	 }
-
 	 archivo.close();
        }
      }
@@ -61,10 +60,7 @@ int main(int argc, char* argv[]) {
      try {
 
       cout << "> ";
-
       getline(cin, line); 
-      // line + '\n';
-
 	if(!cin) break;
 	
         int result = calc->eval(line);
@@ -77,8 +73,15 @@ int main(int argc, char* argv[]) {
     }
    }
 delete calc;
+}
 
-   return EXIT_SUCCESS;
+bool compi(int argc, char* argv[]) {
+  for(int i=1; i<argc; i++){
+    if(strncmp(argv[i], "-c", 2)==0) {
+      return true; 
+    }
+  }
+  return false;
 }
 
 void scannerCommand(int argc, char* argv[]){
@@ -90,7 +93,6 @@ void scannerCommand(int argc, char* argv[]){
 
   for(int i=1; i<argc; i++){ //strncmp() compare chain, stdlib.h-string.h
     if(strncmp(argv[i], "-v", 2)==0){  // 2 is the max number of char to compare 
-      v = true;
       string chain = argv[i+1];
       int equal = chain.find_first_of('=');
       var = chain.substr(0, equal);
@@ -112,60 +114,68 @@ bool noInteractive(int argc, char** argv){
   return false;
 }
 
-
-bool compi(int argc, char** argv){
-  for(int i=1; 1<argc; i++){
-    if(strncmp(argv[i], "-c", 2) == 0) {
-      return true;
-      }
-  }
-  return false;
-}
-
-
-void compiler(ifstream &archivo, string chain){
+void compiler(ifstream &archivo){
+  
   string line;
-  string lineOut;
-  string temp = "";
-
+  string countLine;
+  ofstream filePrint;
+  string temp;
+  
   while(!archivo.eof()){
     try {
       getline(archivo, line);
 
-      string printer = temp + "\n# print value produced \n" +
+        string printer = temp + "\n# Write result \n" +
 	"operator1 := M[sp+1] \n"+
+	"sp  := sp - one \n";
 	"writeInt(operator1) \n"+
-	"sp  := sp + one \n";
+    
+      countLine = calc->compile(line) + printer;
+        filePrint.open("a.ewe", ios::out);
+	if(filePrint.fail()){
+	  cout << "error";
+	}
+	filePrint << getText(countLine);
+	filePrint.close();
 
-      lineOut += calc->compile(line) + printer;
     }
-    catch(Exception e){}    
+    catch(Exception e){
+    }
   }
+}
 
-  ofstream archivoOut;
-  archivoOut.open(chain.substr(0, chain.size()-4)+".ewe", ios::out);
-
-  archivoOut << getText(lineOut);
-  archivoOut.close();
+void noCompiler(ifstream &archivo) {
+  string line;
+  while(!archivo.eof()){
+    try { 
+      getline(archivo, line);
+      int result = calc->eval(line);
+		
+      cout << "= " << result << endl;
+    }
+    catch(Exception e) {} 	    	      
+    }   
 }
 
 string getText(string lineOut) {
   string temp = "";
-  string input = temp + "\n# Code didn't edit \n" +
+  string input = temp + "\n# Instrucciones antes del recorrido del AST \n" +
     "sp   := 1000 \n"+
     "one  := 1 \n"+
     "zero := 0 \n";
-string endFile = temp + "\n# Memory \n" +
-    "equ zero         M[0] \n"+
-    "equ one          M[1] \n"+
-    "equ operator1    M[2] \n"+
-    "equ operator2    M[3] \n"+
-    "equ sp           M[4] \n"+
-    "equ memory       M[5] \n"+
-    "equ value        M[6] \n"+
-  calc->getKeys();
+    "memory := zero"
+string endFile = temp + "\n# end: halt \n" +
+    "equ memory         M[0] \n"+
+    "equ one            M[1] \n"+
+    "equ zero           M[2] \n"+
+    "equ operator1      M[3] \n"+
+    "equ operator2      M[4] \n"+
+    "equ sp             M[5] \n"+
+    "equ stack          M[1000] \n"+
+  
+  calc->getValue();
 
- return input + lineOut + "\n halt: \n" + endFile;
+ return input + lineOut + endFile;
 }
 
 
