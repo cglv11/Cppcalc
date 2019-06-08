@@ -19,11 +19,11 @@ class Calculator {
    int getVar(string var);
    bool containVar(string var);
    string compile(string expr);
-   string getKeys(); 
+   string getValue(); 
 
  private:
    int memory;
-   map <string, int> variables;
+   map <string, int> maps;
 };
 
 extern Calculator* calc;  //variable global, para resolver el problema que tenemos una sola memoria. Con la variable externa, recall llama a calculator

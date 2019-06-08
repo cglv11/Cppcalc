@@ -48,24 +48,24 @@ void Calculator::minus(int val) {
 }
 
 void Calculator::setVar(string var, int val) {
-  variables[var] = val;
+  maps[var] = val;
 }
 
 bool Calculator::containVar(string var) {
-  return variables.count(var);
+  return maps.count(var);
 }
 
 int Calculator::getVar(string var) {
-  return variables[var];
+  return maps[var];
 }
 
-int Calculator::compile(string expr) {
+string Calculator::compile(string expr) {
 
    Parser* parser = new Parser(new istringstream(expr));
 
    AST* tree = parser->parse();
 
-   int result = tree->compile();
+   string result = tree->compile();
 
    delete tree;
 
@@ -74,14 +74,14 @@ int Calculator::compile(string expr) {
    return result;
 }
 
-string Calculator::getKeys() {
-  string keys;
+string Calculator::getValue() {
+  string values;
   int count = 7;
-  for(map<string, int>::iterator it = variables.begin(); it != variables.end(); ++it){
-    keys = keys + "equ " + it->first + " M[" + to_string(count)+ "] \n";
+  for(map<string, int>::iterator it = maps.begin(); it != maps.end(); ++it){
+    values = values + "equ " + it->first + " M[" + to_string(count)+ "] \n";
     count++;
   }
 
-  return keys;
+  return values;
 }
 

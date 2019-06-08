@@ -66,12 +66,7 @@ int AddNode::evaluate() {
 
 string AddNode::compile() {
   string line = getLeftSubTree()->compile() + getRightSubTree()->compile();
-  return line + "\n# AddNode \n"+
-         "operator1 := M[sp+2] \n"+
-         "operator2 := M[sp+1] \n"+
-         "sp  := sp + one \n"+
-         "operator1 := operator1 + operator2 \n"+ 
-         "M[sp+1] := operator1 \n";
+  
 }
 
 SubNode::SubNode(AST* left, AST* right):
@@ -85,11 +80,12 @@ int SubNode::evaluate() {
 string SubNode::compile() {
   string line = getLeftSubTree()->compile() + getRightSubTree()->compile();
   return line + "\n# SubNode \n"+
-         "operator1 := M[sp+2] \n"+
-         "operator2 := M[sp+1] \n"+
+         "operator2 := M[sp+0] \n"+
+         "operator1 := M[sp+1] \n"+
+         "operator1 := operator1 + operator2 \n"+
          "sp  := sp + one \n"+
-         "operator1 := operator1 - operator2 \n"+ 
-         "M[sp+1] := operator1 \n";
+         "M[sp+0] := operator1 \n";
+
 }
 
 TimesNode::TimesNode(AST* left, AST* right):
@@ -103,11 +99,11 @@ int TimesNode::evaluate() {
 string TimesNode::compile() {
   string line = getLeftSubTree()->compile() + getRightSubTree()->compile();
   return line + "\n# TimesNode \n"+
-         "operator1 := M[sp+2] \n"+
-         "operator2 := M[sp+1] \n"+
+         "operator2 := M[sp+0] \n"+
+         "operator1 := M[sp+1] \n"+
+         "operator1 := operator1 * operator2 \n"+
          "sp  := sp + one \n"+
-         "operator1 := operator1 * operator2 \n"+ 
-         "M[sp+1] := operator1 \n";
+         "M[sp+0] := operator1 \n";
 }
 
 DivideNode::DivideNode(AST* left, AST* right):
@@ -120,12 +116,13 @@ int DivideNode::evaluate() {
 
 string DivideNode::compile() {
   string line = getLeftSubTree()->compile() + getRightSubTree()->compile();
-  return line + "\n# DivideNode \n"+
-         "operator1 := M[sp+2] \n"+
-         "operator2 := M[sp+1] \n"+
+    return line + "\n# TimesNode \n"+
+         "operator2 := M[sp+0] \n"+
+         "operator1 := M[sp+1] \n"+
+         "operator1 := operator1 / operator2 \n"+
          "sp  := sp + one \n"+
-         "operator1 := operator1 / operator2 \n"+ 
-         "M[sp+1] := operator1 \n";
+         "M[sp+0] := operator1 \n";
+
 }
 
 ModuleNode::ModuleNode(AST* left, AST* right):
@@ -138,12 +135,13 @@ int ModuleNode::evaluate() {
 
 string ModuleNode::compile() {
   string line = getLeftSubTree()->compile() + getRightSubTree()->compile();
-  return line + "\n# ModuleNode \n"+
-         "operator1 := M[sp+2] \n"+
-         "operator2 := M[sp+1] \n"+
+    return line + "\n# TimesNode \n"+
+         "operator2 := M[sp+0] \n"+
+         "operator1 := M[sp+1] \n"+
+         "operator1 := operator1 % operator2 \n"+
          "sp  := sp + one \n"+
-         "operator1 := operator1 % operator2 \n"+ 
-         "M[sp+1] := operator1 \n";
+         "M[sp+0] := operator1 \n";
+
 }
 
 NumNode::NumNode(int n) :
@@ -223,6 +221,16 @@ StoreNode::~StoreNode() {}
 int StoreNode::evaluate() {
   calc->store(getSubTree()->evaluate()); 
   return calc->recall();  
+}
+
+string StoreNode::compile() {
+  int result = getSubTree()->evaluate();
+  calc->store(result);
+  string line = getSubTree()->compile();
+  return line + "\n# StoreNode \n"+
+         "memory := " + to_string(result) + "\n"+
+         "sp      := sp+one \n"+
+         "M[sp+1] := memory \n";
 }
 
 ClearNode::ClearNode() :
