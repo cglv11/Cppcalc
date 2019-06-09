@@ -292,7 +292,8 @@ string MinusNode::compile() {
   calc->minus(result);
   return line + "\n# Memory Minus \n"+
          "operator2 := M[sp+0]\n"+
-         "memory := memory - operator2";
+         "memory := memory - operator2Ρ \n" +
+    "M[sp+0] := memory";
 
 }
 
