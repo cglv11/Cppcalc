@@ -105,7 +105,7 @@ class RecallNode : public AST {
 
 public:     //metodos
    RecallNode();
-
+  ~RecallNode();
    int evaluate();
    string compile();
 };

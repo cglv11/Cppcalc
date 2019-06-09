@@ -14,9 +14,9 @@ Calculator* calc;
 
 void scannerCommand(int, char**);
 bool noInteractive(int, char**);
-string getText(string);
+string getText(string, string);
 bool compi(int, char**);
-void compiler(ifstream&);
+void compiler();
 void noCompiler(ifstream&);
 
 int main(int argc, char* argv[]) {
@@ -35,50 +35,52 @@ int main(int argc, char* argv[]) {
        error = false;
        chain = argv[i];
        
+       if(compi(argc, argv)){
+	 //compilerw(archivo);
+       }
+       
        if (chain.size()>=5 and chain.substr(chain.size()-5, chain.size())==".calc"){
 	 archivo.open(argv[i], ios::in);
-	 if(archivo.fail()){
-	   cout << "Error at the moment of reading file: " << argv[i] << endl;
-	   error = true;
-	 }
 
 	 if (compi(argc, argv) and !error){
-	   compiler(archivo);
+	    
+	   cout << "hola";
 	 }
-	 else {
-	     if(!error)
-	     noCompiler(archivo);
-	     
-	 }
+	 else{  if(!error)
+	      noCompiler(archivo);
+	   }
 	 archivo.close();
        }
      }
    }
-     
+    
    else {
-    while(true){
-     try {
-
-      cout << "> ";
-      getline(cin, line); 
-	if(!cin) break;
-	
-        int result = calc->eval(line);
-
-        cout << "= " << result << endl;
-      
+     for(int i=1; i<argc; i++){
+       if(compi(argc, argv)){
+         compiler();
+       }
      }
-     catch(Exception ex) {
+     while(true){
+       try {
+	 cout << "> ";
+	 getline(cin, line);
+	 if(!cin) break; 
+	 int result = calc->eval(line);
+	 cout << "= " << result << endl;
+       }
+       catch(Exception ex) {}
      }
-    }
    }
-delete calc;
+
+   delete calc;
+   
 }
 
 bool compi(int argc, char* argv[]) {
+  bool c;
   for(int i=1; i<argc; i++){
     if(strncmp(argv[i], "-c", 2)==0) {
-      return true; 
+      return true;      
     }
   }
   return false;
@@ -114,34 +116,39 @@ bool noInteractive(int argc, char** argv){
   return false;
 }
 
-void compiler(ifstream &archivo){
+void compiler(){
   
-  string line;
   string countLine;
   ofstream filePrint;
   string temp;
-  
-  while(!archivo.eof()){
+  string line;
+  string line2;
+
+  while(true){
     try {
-      getline(archivo, line);
+      cout << "> ";
+      getline(cin, line);
+      if(!cin) break;
+      line2 = line;
 
-        string printer = temp + "\n# Write result \n" +
-	"operator1 := M[sp+1] \n"+
-	"sp  := sp - one \n";
-	"writeInt(operator1) \n"+
-    
-      countLine = calc->compile(line) + printer;
-        filePrint.open("a.ewe", ios::out);
-	if(filePrint.fail()){
-	  cout << "error";
-	}
-	filePrint << getText(countLine);
-	filePrint.close();
+        string printer = temp + 
+	"\n# Write result \n" +
+        "operator1 := M[sp+0] \n"+
+        "sp  := sp - one \n"+
+        "writeInt(operator1)";
 
+      countLine = countLine + calc->compile(line) + printer;
     }
-    catch(Exception e){
-    }
+    catch(Exception e){ cout << "error aca";}
   }
+
+  filePrint.open("a.ewe", ios::out);
+  if(filePrint.fail()){
+    cout << "error";
+  }
+  filePrint << getText(countLine, line2);
+  filePrint.close();
+
 }
 
 void noCompiler(ifstream &archivo) {
@@ -157,14 +164,18 @@ void noCompiler(ifstream &archivo) {
     }   
 }
 
-string getText(string lineOut) {
+string getText(string lineOut, string line) {
   string temp = "";
-  string input = temp + "\n# Instrucciones antes del recorrido del AST \n" +
+  string input = temp +
+    "#Expresion: " + line +
+    "\nstart: " +
+    "\n# Instrucciones antes del recorrido del AST \n" +
     "sp   := 1000 \n"+
     "one  := 1 \n"+
-    "zero := 0 \n";
-    "memory := zero"
-string endFile = temp + "\n# end: halt \n" +
+    "zero := 0 \n"+
+    "memory := zero \n"+
+    "#Comienza el recorrido del arbol";
+  string endFile = temp + "\n# end: halt \n" +
     "equ memory         M[0] \n"+
     "equ one            M[1] \n"+
     "equ zero           M[2] \n"+
