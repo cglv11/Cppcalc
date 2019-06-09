@@ -119,7 +119,12 @@ AST* Parser::factor() {
 
   AST* result;
   Token* t = scan->getToken();
-     
+
+   if (t->getType() == identifier) {
+     return new IdNode(t->getLex());
+   }
+
+  
    if (t->getType() == number) {
       istringstream in(t->getLex());
       int val;
@@ -127,20 +132,11 @@ AST* Parser::factor() {
       return new NumNode(val);
    }
 
-   if (t->getType() == identifier) {
-      istringstream in(t->getLex());
-      string val;
-      in >> val;
-      return new IdNode(val);
-   }
-
-   if (t->getType() == keyword){
-    if(t->getLex() == "-v") {
+   if (t->getType() == keyword)
+    if(t->getLex() == "-v") 
       return InitVar();
-     } 
-    else if(t->getLex() == "R") { 
+    else if(t->getLex() == "R")  
       return new RecallNode();
-    }
     else if(t->getLex() == "C") {
       return new ClearNode();
     }
@@ -148,19 +144,23 @@ AST* Parser::factor() {
       cout << "* Parse error" << endl;
       throw ParseError;
     }
-  }
+ 
 
    if (t->getType() == lparen) { 
-     AST *result = expr();
+     result = expr();
      t = scan->getToken();
-     if (t->getType() != rparen) {
-       cout << "* Parse error" << endl;
-       throw ParseError;
-     }
-     return result;
-   }
 
-   cerr << "* Parse error" << endl;
+     if (t->getType() == rparen) {
+       return result;
+     }
+     else{
+       cout << "* parser error" << endl;
+	 throw ParseError;
+     }
+   }
+   
+
+   cerr << "* Parse error 5" << endl;
    throw ParseError; 
 }
 
@@ -174,7 +174,7 @@ AST* Parser::InitVar() {
       return new InitVarNode(t->getLex(), expr());
   }
   
-  cout << "* parser error" << endl;
+  cout << "* parser error 6" << endl;
   throw ParseError;   
 }
 
