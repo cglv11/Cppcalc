@@ -273,7 +273,8 @@ string PlusNode::compile() {
   calc->plus(result);
   return line + "\n# Memory Plus \n"+
                 "operator2 := M[sp+0]\n"+
-                "memory := memory + operator2";
+                "memory := memory + operator2"+
+    "M[sp+0] := memory";
 
 }
 
